@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class RoadCalculator {
     private ArrayList<Block> rectangeles;
@@ -19,11 +22,39 @@ public class RoadCalculator {
         initialPoint = new Point((int) points.get(0).getX(),(int) points.get(0).getY());
     }
     public int manhattanDistance(Point a, Point b){
-        return (int) (Math.abs(a.getX()-b.getX()) + Math.abs(a.getY()-b.getY()));
+        return (Math.abs(a.x-b.x) + Math.abs(a.y-b.y));
     }
 
-    
+    public String create_path(){
+        Queue<Point> traverse = new LinkedList<>();
+        traverse.add(points.remove(0));
 
+        for (int i = 1; i < points.size(); i++){
+            traverse.add(new Point(points.remove(find_closest_point_Index(i))));
+        }
+
+        String str = "";
+        while (!traverse.isEmpty()){
+            str = str.concat(traverse.remove().toString());
+            str =str.concat("\n");
+        }
+
+        return str;
+    }
+
+
+
+    int find_closest_point_Index(int index){
+        int smallest = Integer.MAX_VALUE;
+        int indexPosition = 0;
+        for (int i = 1; i < points.size(); i++){
+            if(manhattanDistance(points.get(index),points.get(i))<smallest && isThereAWay(points.get(index),points.get(i))){
+                indexPosition = i;
+                smallest = manhattanDistance(points.get(index),points.get(i));
+            }
+        }
+        return indexPosition;
+    }
     public boolean isThereAWay(Point a, Point b){
 
         int x1 = 0;//smallest x
@@ -48,32 +79,35 @@ public class RoadCalculator {
             x1 = b.y;
         }
 
-        boolean found = false;
-
+        boolean found1 = true;
+        boolean found2 = true;
         Point number1 = new Point(x1,y1);
         Point number2 = new Point(x1,y2);
         Point number3 = new Point(x2,y1);
         Point number4 = new Point(x2,y2);
 
-        for (int i = 0; i < rectangeles.size(); i++){
-            if (LineIntersectsRect(number1,number2,rectangeles.get(i))){
-                found = true;
+        for (int i = 0; i < rectangeles.size(); i++) {
+            if (LineIntersectsRect(number1, number2, rectangeles.get(i))) {
+                found1 = false;
                 break;
             }
-            if (LineIntersectsRect(number2,number4,rectangeles.get(i))){
-                found = true;
-                break;
-            }
-            if (LineIntersectsRect(number1,number3,rectangeles.get(i))){
-                found = true;
-                break;
-            }
-            if (LineIntersectsRect(number3,number4,rectangeles.get(i))){
-                found = true;
+            if (LineIntersectsRect(number2, number4, rectangeles.get(i))) {
+                found1 = false;
                 break;
             }
         }
-    return found;
+        for (int i = 0; i < rectangeles.size(); i++) {
+            if (LineIntersectsRect(number1, number3, rectangeles.get(i))) {
+                found2 = false;
+                break;
+            }
+            if (LineIntersectsRect(number3, number4, rectangeles.get(i))) {
+                found2 = false;
+                break;
+            }
+        }
+
+    return found1 || found2;
     }
 
     public boolean LineIntersectsRect(Point p1, Point p2, Block r)
