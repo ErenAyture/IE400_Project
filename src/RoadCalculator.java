@@ -8,7 +8,9 @@ public class RoadCalculator {
     private ArrayList<Block> rectangeles;
     private ArrayList<Point> points;
     private Point initialPoint;
+    private String string;
     public RoadCalculator(){
+        string ="";
         RectangelPointsCreater generator = new RectangelPointsCreater();
         rectangeles = new ArrayList<Block>(generator.getRects());
         points = new ArrayList<Point>(generator.getPoints());
@@ -20,6 +22,7 @@ public class RoadCalculator {
             }
         }
         initialPoint = new Point((int) points.get(0).getX(),(int) points.get(0).getY());
+        string.concat(initialPoint.toString());
     }
     public int manhattanDistance(Point a, Point b){
         return (Math.abs(a.x-b.x) + Math.abs(a.y-b.y));
@@ -30,16 +33,26 @@ public class RoadCalculator {
         traverse.add(points.remove(0));
 
         for (int i = 1; i < points.size(); i++){
+            i = find_closest_point_Index(i)-1;
             traverse.add(new Point(points.remove(find_closest_point_Index(i))));
         }
 
         String str = "";
+
+        Point temp = new Point();
+
         while (!traverse.isEmpty()){
-            str = str.concat(traverse.remove().toString());
+            temp.setLocation(traverse.peek());
+            /*
+            str = str.concat(traverse.poll().toString());
             str =str.concat("\n");
+            str = str.concat("Dıstance: "+manhattanDistance(points.get(index),points.get(indexPosition)));
+            str =str.concat("\n");
+
+             */
         }
 
-        return str;
+        return string;
     }
 
 
@@ -53,6 +66,11 @@ public class RoadCalculator {
                 smallest = manhattanDistance(points.get(index),points.get(i));
             }
         }
+        string = string.concat("Dıstance: "+manhattanDistance(points.get(index),points.get(indexPosition)));
+        string =string.concat("\n");
+        string = string.concat(points.get(indexPosition).toString());
+        string =string.concat("\n");
+
         return indexPosition;
     }
     public boolean isThereAWay(Point a, Point b){
