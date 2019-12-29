@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="dcterms_bug_56479">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/poi-src-4.1.2-SNAPSHOT-20191228/poi-4.1.2-SNAPSHOT/test-data/openxml4j/dcterms_bug_56479.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
