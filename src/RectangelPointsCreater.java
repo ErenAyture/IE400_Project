@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class RectangelPointsCreater {
@@ -85,6 +87,8 @@ public class RectangelPointsCreater {
         points.add(new Point(14,21));
         points.add(new Point(34,3));
 
+        Collections.sort(points, (point, t1) -> Integer.compare(point.x, t1.x));
+
 
         this.biggestPo = new Point(biggestPoint());
         grid = new int[biggestPo.x][biggestPo.y];
@@ -94,6 +98,7 @@ public class RectangelPointsCreater {
                 System.out.print(grid[r][c] + " ");
             System.out.println();
         }
+        System.out.println(biggestPo.x+" "+biggestPo.y);
     }
 
     public ArrayList<Block> getRects() {

@@ -56,7 +56,11 @@ public class RoadCalculator {
         }
         str =str.concat(traverse.poll().toString().substring(14));
         str =str.concat("\n");
-
+        int totalCoast = 0;
+        for (int z = 0; z <  distances.size(); z++){
+            totalCoast += distances.get(z);
+        }
+        System.out.println("Total coast: " +totalCoast);
         System.out.println(str );
 
         return str;
