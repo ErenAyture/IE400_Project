@@ -8,10 +8,11 @@ public class RoadCalculator {
     private ArrayList<Block> rectangeles;
     private ArrayList<Point> points;
     private Point initialPoint;
-    private String string;
+    private RectangelPointsCreater generator;
+
+
     public RoadCalculator(){
-        string ="";
-        RectangelPointsCreater generator = new RectangelPointsCreater();
+        this.generator = new RectangelPointsCreater();
         rectangeles = new ArrayList<Block>(generator.getRects());
         points = new ArrayList<Point>(generator.getPoints());
         for (int i = 0; i < rectangeles.size(); i++){
@@ -22,11 +23,13 @@ public class RoadCalculator {
             }
         }
         initialPoint = new Point((int) points.get(0).getX(),(int) points.get(0).getY());
-        string.concat(initialPoint.toString());
     }
+
+
     public int manhattanDistance(Point a, Point b){
         return (Math.abs(a.x-b.x) + Math.abs(a.y-b.y));
     }
+
 
     public String create_path(){
         Queue<Point> traverse = new LinkedList<>();
@@ -38,21 +41,25 @@ public class RoadCalculator {
         }
 
         String str = "";
-
-        Point temp = new Point();
-
-        while (!traverse.isEmpty()){
-            temp.setLocation(traverse.peek());
-            /*
-            str = str.concat(traverse.poll().toString());
-            str =str.concat("\n");
-            str = str.concat("Dıstance: "+manhattanDistance(points.get(index),points.get(indexPosition)));
-            str =str.concat("\n");
-
-             */
+        ArrayList<Integer> distances = new ArrayList<Integer>();
+        ArrayList<Point> distance = new ArrayList<Point>(traverse);
+        for (int i = 0; i <  distance.size()-1; i++){
+            distances.add(manhattanDistance(distance.get(i),distance.get(i+1)));
         }
+        int i = 0;
+        while (!(traverse.size()==1)){
 
-        return string;
+            str =str.concat(traverse.poll().toString().substring(14));
+            str =str.concat("\n");
+            str = str.concat("Distance : "+distances.get(i++));
+            str =str.concat("\n");
+        }
+        str =str.concat(traverse.poll().toString().substring(14));
+        str =str.concat("\n");
+
+        System.out.println(str );
+
+        return str;
     }
 
 
@@ -61,18 +68,16 @@ public class RoadCalculator {
         int smallest = Integer.MAX_VALUE;
         int indexPosition = 0;
         for (int i = 1; i < points.size(); i++){
-            if(manhattanDistance(points.get(index),points.get(i))<smallest && isThereAWay(points.get(index),points.get(i))){
+            if(manhattanDistance(points.get(index),points.get(i))<smallest
+                    && ( ( !( points.get(index).equals( points.get(i) ) ) ) &&generator.calculate_number_of_ways(points.get(index),points.get(i))> 0)){
                 indexPosition = i;
                 smallest = manhattanDistance(points.get(index),points.get(i));
             }
         }
-        string = string.concat("Dıstance: "+manhattanDistance(points.get(index),points.get(indexPosition)));
-        string =string.concat("\n");
-        string = string.concat(points.get(indexPosition).toString());
-        string =string.concat("\n");
 
         return indexPosition;
     }
+    @Deprecated
     public boolean isThereAWay(Point a, Point b){
 
         int x1 = 0;//smallest x
@@ -89,12 +94,12 @@ public class RoadCalculator {
             x1 = b.x;
         }
         if(a.y < b.y){
-            x1 = a.y;
-            x2 = b.y;
+            y1 = a.y;
+            y2 = b.y;
         }
         else {
-            x2 = a.y;
-            x1 = b.y;
+            y2 = a.y;
+            y1 = b.y;
         }
 
         boolean found1 = true;
@@ -127,7 +132,7 @@ public class RoadCalculator {
 
     return found1 || found2;
     }
-
+    @Deprecated
     public boolean LineIntersectsRect(Point p1, Point p2, Block r)
     {
         return LineIntersectsLine(p1, p2, new Point(r.getX(), r.getY()), new Point(r.getX() + r.getWidth(), r.getY())) ||
@@ -136,6 +141,7 @@ public class RoadCalculator {
                 LineIntersectsLine(p1, p2, new Point(r.getX(), r.getY() + r.getHeight()), new Point(r.getX(), r.getHeight())) ||
                 (r.Contains(p1) && r.Contains(p2));
     }
+    @Deprecated
     private static boolean LineIntersectsLine(Point l1p1, Point l1p2, Point l2p1, Point l2p2)
     {
         float q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.y) - (l1p1.x - l2p1.x) * (l2p2.y - l2p1.y);
